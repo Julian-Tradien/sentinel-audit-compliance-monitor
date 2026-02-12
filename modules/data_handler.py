@@ -18,13 +18,22 @@ class DataStreamer:
         """Filtert Daten für einen spezifischen Step."""
         return self.df[self.df['step'] == step]
 
-    def stream_generator(self, step, batch_size=5):
-        """
-        Simuliert den Live-Stream innerhalb eines Steps.
-        Gibt zufällige Batches aus dem Step zurück.
-        """
-        step_data = self.get_step_data(step)
-        shuffled_data = step_data.sample(frac=1).reset_index(drop=True)
-        
-        for i in range(0, len(shuffled_data), batch_size):
-            yield shuffled_data.iloc[i:i + batch_size]
+    def stream_generator(self, step):
+            """
+            Simuliert den Live-Stream innerhalb eines Steps mit variabler Batch-Größe.
+            """
+            step_data = self.get_step_data(step)
+            shuffled_data = step_data.sample(frac=1).reset_index(drop=True)
+            
+            current_idx = 0
+            total_rows = len(shuffled_data)
+            
+            while current_idx < total_rows:
+                dynamic_batch_size = random.randint(8, 12)
+                
+                # Ende des Batches berechnen
+                end_idx = min(current_idx + dynamic_batch_size, total_rows)
+                
+                yield shuffled_data.iloc[current_idx:end_idx]
+                
+                current_idx = end_idx

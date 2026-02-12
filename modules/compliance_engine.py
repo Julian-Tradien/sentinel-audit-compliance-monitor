@@ -25,7 +25,6 @@ class ComplianceEngine:
 
         # Regel 3: Mathematische Inkonsistenz (Datenintegrität)
         # Prüfung: Ist der neue Kontostand logisch korrekt? 
-        # (Wir erlauben eine kleine Toleranz von 0.01 wegen Rundungsfehlern)
         expected_balance = row['oldbalanceOrg'] - row['amount']
         if abs(expected_balance - row['newbalanceOrig']) > 0.01:
             if row['type'] in ['TRANSFER', 'CASH_OUT']: # Nur bei Abgängen relevant
